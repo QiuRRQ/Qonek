@@ -12,6 +12,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -132,7 +134,7 @@ public class CreateNewChatTemplate {
         System.out.println("text element by ID");
 //        cek chat pada preview
 
-        String textPreview = driver.findElement(By.xpath("//p[@class='text']//div[contains(text(),'Tester text')]")).getText();
+        String textPreview = driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_1")).getText();
         assertEquals(textPreview, "Tester text");
     }
 
@@ -208,12 +210,12 @@ public class CreateNewChatTemplate {
 
     @And("klik pilihan “Image”")
     public void klikPilihanImage() {
-        driver.findElement(By.linkText("Image")).click();
+        driver.findElement(By.id("bublechat_reusable_btn_selectimage_addnewtemplate_buble_btn_3")).click();
     }
 
     @And("user memilih image dari komputernya")
-    public void userMemilihImageDariKomputernya() {
-        driver.findElement(By.linkText("Image")).sendKeys("D:\\Data C\\Pictures\\cat.jpg");
+    public void userMemilihImageDariKomputernya() throws IOException {
+        driver.findElement(By.id("inputFileImage")).sendKeys("D:\\Data C\\Pictures\\cat.jpg");
     }
 
     @Then("Image yang dipilih akan ditambahkan pada box bubble chat {int}")
@@ -230,13 +232,18 @@ public class CreateNewChatTemplate {
 
     @When("User klik dan mengetikkan “Produk {int}, potongan harga {int}ribu” pada form box Bubble Chat {int}")
     public void userKlikDanMengetikkanProdukPotonganHargaRibuPadaFormBoxBubbleChat(int arg0, int arg1, int arg2) {
-        driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_3")).sendKeys("Produk 1, potongan harga 20ribu");
+        action = new Actions(driver);
+        WebElement bubbleChat = driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_3"));
+        bubbleChat.click();
+        System.out.println("click by ID");
+        action.click(bubbleChat).sendKeys("Produk 1, potongan harga 20ribu").perform();
+        System.out.println("input text");
     }
 
     @Then("Box bubble chat {int} akan terisi pesan “Produk {int}, potongan harga {int}ribu”")
     public void boxBubbleChatAkanTerisiPesanProdukPotonganHargaRibu(int arg0, int arg1, int arg2) {
         String validateBubbleChat = driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_3")).getText();
-        assertEquals(validateBubbleChat, "Produk 1, potongan harga 20ribu");
+        assertEquals("Produk 1, potongan harga 20ribu", validateBubbleChat);
     }
 
     @And("pada bagian Preview menampilkan bubble chat {int} dengan pesan “[Image] + Produk {int}, potongan harga {int}ribu”")
@@ -247,12 +254,21 @@ public class CreateNewChatTemplate {
 
     @When("User klik dan mengetikkan “Promo{int}” pada form Template Hotkey")
     public void userKlikDanMengetikkanPromoPadaFormTemplateHotkey(int arg0) {
-        driver.findElement(By.id("inputlabel_textinput_hotkey")).sendKeys("Promo2024");
+        action = new Actions(driver);
+        WebElement bubbleChat = driver.findElement(By.id("inputlabel_textinput_hotkey"));
+        action.click(bubbleChat)
+                .keyDown(Keys.CONTROL)
+                .sendKeys("a")
+                .keyUp(Keys.CONTROL)
+                .sendKeys(Keys.BACK_SPACE)
+                .build()
+                .perform();
+        action.click(bubbleChat).sendKeys("Promo2024").perform();
     }
 
     @Then("Input form Template Hotkey akan aktif dan terisi “Promo{int}”")
     public void inputFormTemplateHotkeyAkanAktifDanTerisiPromo(int arg0) {
-        String promoValue = driver.findElement(By.id("inputlabel_textinput_hotkey")).getText();
+        String promoValue = driver.findElement(By.id("inputlabel_textinput_hotkey")).getAttribute("value");
         assertEquals(promoValue, "Promo2024");
     }
 
@@ -269,7 +285,7 @@ public class CreateNewChatTemplate {
     @And("template akan bertambah pada tabel daftar template dengan isi kolom <Template Name>, <Hotkey>, <Created Time>, dan <Guide Book>")
     public void templateAkanBertambahPadaTabelDaftarTemplateDenganIsiKolomTemplateNameHotkeyCreatedTimeDanGuideBook() {
         String templateName = driver.findElement(By.id("contactlist_bodytable_btn_3_0")).getText();
-        assertEquals(templateName, "promo produk");
+        assertEquals(templateName, "Promo produk");
     }
 
     @And("pada bagian kanan tabel akan terdapat kolom button “Edit” dan “Delete”")
