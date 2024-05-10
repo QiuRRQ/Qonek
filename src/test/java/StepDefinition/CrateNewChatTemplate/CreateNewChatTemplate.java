@@ -234,10 +234,13 @@ public class CreateNewChatTemplate {
     public void userKlikDanMengetikkanProdukPotonganHargaRibuPadaFormBoxBubbleChat(int arg0, int arg1, int arg2) {
         action = new Actions(driver);
         WebElement bubbleChat = driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_3"));
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         bubbleChat.click();
         System.out.println("click by ID");
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         action.click(bubbleChat).sendKeys("Produk 1, potongan harga 20ribu").perform();
         System.out.println("input text");
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
     }
 
     @Then("Box bubble chat {int} akan terisi pesan “Produk {int}, potongan harga {int}ribu”")
@@ -296,4 +299,5 @@ public class CreateNewChatTemplate {
         assertTrue(buttonEdit);
         assertTrue(buttonDelete);
     }
+
 }
