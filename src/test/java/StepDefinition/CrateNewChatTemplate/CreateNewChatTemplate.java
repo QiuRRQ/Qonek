@@ -1,10 +1,13 @@
 package StepDefinition.CrateNewChatTemplate;
+import StepDefinition.BaseClass.WebDriverSingleton;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,16 +20,23 @@ import java.time.Duration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+
+
 public class CreateNewChatTemplate {
 
-    WebDriver driver;
+
+    private WebDriver driver;
     Actions action;
+
+    @Before
+    public void setUp() {
+        // atau inisialisasi driver lainnya
+        this.driver = WebDriverSingleton.getDriver();
+    }
+
     @Given("User sudah login")
     public void userSudahLogin() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        driver = new ChromeDriver(options);
-        action = new Actions(driver);
+
         driver.get("https://qonek-uat.web.app/");
         driver.findElement(By.id("sign_in_text_input_email")).sendKeys("uattesting@gmail.com");
         driver.findElement(By.id("sign_in_text_input_password")).sendKeys("DevPassword381!");
@@ -119,6 +129,7 @@ public class CreateNewChatTemplate {
         WebElement inputElement = driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_1"));
         inputElement.click();
         System.out.println("click by ID");
+        action = new Actions(driver);
         action.click(inputElement).sendKeys("Tester text").perform();
         System.out.println("text element by ID");
 //        cek chat pada preview
