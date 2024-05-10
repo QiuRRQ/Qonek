@@ -5,17 +5,15 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -148,15 +146,15 @@ public class CreateNewChatTemplate {
     public void userKlikDanMengetikkanPromoProdukPadaFormTemplateName() {
         String templateName = "Promo produk";
         driver.findElement(By.id("addnewtemplatechat_textinput_templatename")).sendKeys(templateName);
-
+        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     }
 
     @Then("Input form Template Name akan aktif dan terisi “Promo produk”")
     public void inputFormTemplateNameAkanAktifDanTerisiPromoProduk() {
         String validasiInput = "Promo produk";
         //        validasi input nya
-        String afterInput = driver.findElement(By.id("addnewtemplatechat_textinput_templatename")).getText();
-        assertEquals(afterInput, validasiInput);
+        String afterInput = driver.findElement(By.id("addnewtemplatechat_textinput_templatename")).getAttribute("value");
+        assertEquals(validasiInput, afterInput);
 //        validasi aktifnya
         Boolean activeField = driver.findElement(By.id("addnewtemplatechat_textinput_templatename")).isEnabled();
         assertTrue(activeField);
@@ -165,7 +163,16 @@ public class CreateNewChatTemplate {
     @When("User klik dan mengetikkan “Promo produk terbaru tahun ini” pada form box Bubble Chat {int}")
     public void userKlikDanMengetikkanPromoProdukTerbaruTahunIniPadaFormBoxBubbleChat(int arg0) {
         String inputBubbleChat = "Promo produk terbaru tahun ini";
-        driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_1")).sendKeys(inputBubbleChat);
+        action = new Actions(driver);
+        WebElement bubbleChat = driver.findElement(By.id("bublechat_reusable_quillinput_addnewtemplate_buble_btn_1"));
+        action.click(bubbleChat)
+                .keyDown(Keys.CONTROL)
+                .sendKeys("a")
+                .keyUp(Keys.CONTROL)
+                .sendKeys(Keys.BACK_SPACE)
+                .build()
+                .perform();
+        action.click(bubbleChat).sendKeys(inputBubbleChat).perform();
     }
 
     @Then("Box bubble chat {int} akan terisi pesan “Promo produk terbaru tahun ini”")
@@ -187,7 +194,7 @@ public class CreateNewChatTemplate {
         driver.findElement(By.id("addnewtemplate_buble_btn_addbublechat")).click();
     }
 
-    @Then("Akan muncul bubble chat baru pada bagian “Editorial Template” ")
+    @Then("Akan muncul bubble chat baru pada bagian “Editorial Template”")
     public void akanMunculBubbleChatBaruPadaBagianEditorialTemplate() {
         Boolean newBubbleChat = driver.findElement(By.id("bublechat_reusable_btn_openorderbuble_addnewtemplate_buble_btn_3")).isDisplayed();
         assertTrue(newBubbleChat);

@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
         features = "src\\test\\java\\Features\\CreateNewChatTemplate.feature",
         glue = {"StepDefinition.CrateNewChatTemplate"},
         plugin = {"pretty"}
-
 )
 public class runner_CreateNewChatTemplate {
 
